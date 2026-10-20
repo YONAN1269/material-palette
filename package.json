@@ -3,7 +3,7 @@
   "displayName": "Material Palette — 12 套配色",
   "description": "Material 风格配色合集，12 套主题（深色/浅色/高对比）。界面一体化取向：所有区域与编辑区同一底色、零色差，分隔只用压暗阴影。",
   "version": "1.3.1",
-  "publisher": "local",
+  "publisher": "YONAN1269",
   "license": "MIT",
   "engines": {
     "vscode": "^1.70.0"
@@ -32,10 +32,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-name/material-palette"
+    "url": "https://github.com/YONAN1269/material-palette"
   },
   "bugs": {
-    "url": "https://github.com/your-name/material-palette/issues"
+    "url": "https://github.com/YONAN1269/material-palette/issues"
   },
   "contributes": {
     "themes": [
@@ -105,5 +105,5 @@
     "build": "python scripts/generate_themes.py",
     "package": "vsce package --no-dependencies"
   },
-  "homepage": "https://github.com/your-name/material-palette#readme"
+  "homepage": "https://github.com/YONAN1269/material-palette#readme"
 }
