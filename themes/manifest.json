@@ -1,0 +1,62 @@
+[
+  {
+    "label": "Material Palette · Default",
+    "uiTheme": "vs-dark",
+    "path": "./themes/default.json"
+  },
+  {
+    "label": "Material Palette · Darker",
+    "uiTheme": "vs-dark",
+    "path": "./themes/darker.json"
+  },
+  {
+    "label": "Material Palette · Ocean",
+    "uiTheme": "vs-dark",
+    "path": "./themes/ocean.json"
+  },
+  {
+    "label": "Material Palette · Palenight",
+    "uiTheme": "vs-dark",
+    "path": "./themes/palenight.json"
+  },
+  {
+    "label": "Material Palette · Deep Forest",
+    "uiTheme": "vs-dark",
+    "path": "./themes/deep-forest.json"
+  },
+  {
+    "label": "Material Palette · Nord",
+    "uiTheme": "vs-dark",
+    "path": "./themes/nord.json"
+  },
+  {
+    "label": "Material Palette · Lighter",
+    "uiTheme": "vs",
+    "path": "./themes/lighter.json"
+  },
+  {
+    "label": "Material Palette · High Contrast",
+    "uiTheme": "hc-black",
+    "path": "./themes/default-hc.json"
+  },
+  {
+    "label": "Material Palette · Darker High Contrast",
+    "uiTheme": "hc-black",
+    "path": "./themes/darker-hc.json"
+  },
+  {
+    "label": "Material Palette · Ocean High Contrast",
+    "uiTheme": "hc-black",
+    "path": "./themes/ocean-hc.json"
+  },
+  {
+    "label": "Material Palette · Palenight High Contrast",
+    "uiTheme": "hc-black",
+    "path": "./themes/palenight-hc.json"
+  },
+  {
+    "label": "Material Palette · Lighter High Contrast",
+    "uiTheme": "hc-light",
+    "path": "./themes/lighter-hc.json"
+  }
+]
