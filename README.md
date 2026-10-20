@@ -41,13 +41,18 @@ Material 设计语言的 VSCode 配色合集，**12 套主题**，一个插件�
 
 ## 安装
 
-**扩展市场**：搜索 `Material Palette`，或在命令行
+**直接下载（推荐，无需等待市场审核）**
+
+[`material-palette-1.3.1.vsix`](https://github.com/YONAN1269/material-palette/releases/latest/download/material-palette-1.3.1.vsix)
+
+下载后在 VS Code 里按 `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → 选刚下载的文件。
+（Windows 用户的 `material-palette` 目录里也有一份，双击 `rebuild.bat` 会自动打包并安装。）
+
+**命令行安装**
 
 ```bash
-code --install-extension <publisher>.material-palette
+code --install-extension material-palette-1.3.1.vsix
 ```
-
-**本地 VSIX**：`Ctrl+Shift+P` → **Extensions: Install from VSIX...** → 选 `material-palette-1.3.0.vsix`。
 
 装完必须**完全退出 VS Code 再重新启动**（详见下一节）。
 
