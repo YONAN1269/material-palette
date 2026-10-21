@@ -1,16 +1,16 @@
 # Material Palette
 
-Material 设计语言的 VSCode 配色合集，**12 套主题**，一个插件全部带走。
+Material 设计语言的 VSCode 配色合集，**13 套主题**（12 套界面一体化 + 1 套毛玻璃），一个插件全部带走。
 
 所有变体共享同一套语义调色板（关键字、字符串、函数、类型、常量……），只切换底色与对比度，所以换主题时代码的读法完全不用重新适应。
 
-## 12 套配色
+## 13 套配色
 
 <p align="center">
-  <img src="assets/overview.png" alt="12 套配色总览">
+  <img src="assets/overview.png" alt="13 套配色总览">
 </p>
 
-注意每张卡片里活动栏、标签栏、状态栏和代码区是**同一个颜色**——没有一条分隔线。
+注意每张卡片里活动栏、标签栏、状态栏和代码区是**同一个颜色**——没有一条分隔线。（这 12 张是一体化变体；毛玻璃那套是例外，单独放在下面一节。）
 
 | 主题名 | 底色 | UI Theme |
 |--------|------|----------|
@@ -20,6 +20,7 @@ Material 设计语言的 VSCode 配色合集，**12 套主题**，一个插件�
 | Material Palette · Palenight | `#292D3E` 暗紫 | vs-dark |
 | Material Palette · Deep Forest | `#0D1F17` 深林绿 | vs-dark |
 | Material Palette · Nord | `#2E3440` 极夜蓝 | vs-dark |
+| Material Palette · Frost | `#12161E` 毛玻璃 | vs-dark |
 | Material Palette · Lighter | `#FAFAFA` 浅色 | vs |
 | Material Palette · High Contrast | `#1A2327` | hc-black |
 | Material Palette · Darker High Contrast | `#000000` | hc-black |
@@ -39,11 +40,35 @@ Material 设计语言的 VSCode 配色合集，**12 套主题**，一个插件�
 
 > 高对比变体是唯一例外：可访问性优先，保留实色边框 `contrastBorder`。
 
+## 毛玻璃变体：Frost
+
+`Material Palette · Frost` 是唯一一套**不追求一体化**的配色 —— 它反过来强调层次：面板浮在代码之上，玻璃是有厚度的。
+
+做法参照 iOS 27 Liquid Glass 里能搬到编辑器上的那几条：
+
+- **雾面玻璃（Frost 材质）**：侧栏、面板、标签栏、状态栏是一层"拌了冷白的半透明面"（`#2A2F37E6`），比编辑区亮一档，看起来像磨砂玻璃，不是深色色块。
+- **1px 高光边**：当前标签顶部一条 `#FFFFFF9E` 的白边，模拟光从上方打过来的镜面反射。
+- **高光外侧压一道暗描边**：`#00000099`。这是 iOS 27 相对 iOS 26 的改动 —— 亮边外面有暗线，玻璃才有厚度，否则像贴了张白纸条。
+- **浮层半透明**：补全框、悬浮提示、菜单的底色带 alpha（`#363B44ED`），能隐约透出下面的代码 —— 这是"玻璃"在编辑器里最有用的一处。
+- **文字一律不动**：玻璃上的内容永远平、满对比。这既是 Apple 的规则，也是可读性的底线。
+- **焦点环回来了一点**：`focusBorder` = `#0A84FF8C`（iOS 系统蓝），一体化那批是彻底关掉的。
+
+<p align="center">
+  <img src="assets/frost.png" alt="Material Palette · Frost 毛玻璃效果示意">
+  <br>
+  <sub>奶白玻璃面板 + 标签顶部高光边 + 浮层半透明（补全框能透出下面的代码）</sub>
+</p>
+
+> **一句实话**：VS Code 的主题只能定义颜色，没有 `backdrop-filter`，所以**做不到真正的背景模糊**。
+> 上面这套是"看起来像毛玻璃"的静态实现。想真的透出桌面壁纸，需要另装窗口透明类扩展
+> （如 Vibrancy）；Frost 的 alpha 底色会配合它透出后面的东西。
+
+
 ## 安装
 
 **直接下载（推荐，无需等待市场审核）**
 
-[`material-palette-1.3.1.vsix`](https://github.com/YONAN1269/material-palette/releases/latest/download/material-palette-1.3.1.vsix)
+[`material-palette-1.4.0.vsix`](https://github.com/YONAN1269/material-palette/releases/latest/download/material-palette-1.4.0.vsix)
 
 下载后在 VS Code 里按 `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → 选刚下载的文件。
 （Windows 用户的 `material-palette` 目录里也有一份，双击 `rebuild.bat` 会自动打包并安装。）
@@ -51,7 +76,7 @@ Material 设计语言的 VSCode 配色合集，**12 套主题**，一个插件�
 **命令行安装**
 
 ```bash
-code --install-extension material-palette-1.3.1.vsix
+code --install-extension material-palette-1.4.0.vsix
 ```
 
 装完必须**完全退出 VS Code 再重新启动**（详见下一节）。
@@ -79,7 +104,7 @@ python scripts/diagnose.py
 
 ## 启用
 
-`Ctrl+K Ctrl+T` 打开主题选择器，输入 `Material Palette`，12 套里挑一套。想用 `settings.json` 固定：
+`Ctrl+K Ctrl+T` 打开主题选择器，输入 `Material Palette`，13 套里挑一套（想要毛玻璃就输入 `Frost`）。想用 `settings.json` 固定：
 
 ```json
 {
@@ -183,9 +208,9 @@ material-palette/
 ├── publish.bat               # ★ 双击它：体检 → 打包 → 发布到扩展市场
 ├── package.json              # 插件清单（themes 数组由生成器回写）
 ├── icon.png                  # 插件图标
-├── preview.html              # 12 套配色总览
+├── preview.html              # 13 套配色总览
 ├── assets/wechat-pay.jpg     # 赞赏码
-├── themes/                   # 12 个主题 JSON，每套 350+ 色槽
+├── themes/                   # 13 个主题 JSON，每套 350+ 色槽
 └── scripts/
     ├── generate_themes.py    # 唯一数据源
     ├── validate.py           # 对比度 / 格式自检
