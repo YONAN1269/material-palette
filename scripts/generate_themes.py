@@ -388,6 +388,9 @@ VARIANTS = [
          bg="#0D1F17", fg="#B2CCD6", pal=DARK, accent="#C3E88D"),
     dict(id="nord", label="Material Palette · Nord", ui="vs-dark",
          bg="#2E3440", fg="#D8DEE9", pal=DARK, accent="#88C0D0"),
+    # 毛玻璃（Frost）—— 参照 iOS 27 Liquid Glass 的材质规则，见 frostify()
+    dict(id="frost", label="Material Palette · Frost", ui="vs-dark",
+         bg="#12161E", fg="#E9EEF6", pal=DARK, accent="#0A84FF", frost=True),
     dict(id="lighter", label="Material Palette · Lighter", ui="vs",
          bg="#FAFAFA", fg="#546E7A", pal=LIGHT, accent="#6182B8", light=True),
     dict(id="default-hc", label="Material Palette · High Contrast", ui="hc-black",
@@ -411,6 +414,111 @@ ANSI_LIGHT = ["#546E7A", "#E53935", "#91B859", "#F6A434", "#6182B8", "#7C4DFF",
               "#39ADB5", "#263238"]
 ANSI_LIGHT_BRIGHT = ["#78909C", "#EF5350", "#A5C261", "#FFB300", "#7B9FD4",
                      "#9673F5", "#4DB6BF", "#1C262B"]
+
+
+def frostify(c, bg, fg, accent):
+    """把普通深色主题改成「毛玻璃」材质（iOS 27 Liquid Glass 能落地的那部分）。
+
+    iOS 27 的材质规则里，主题（只有颜色，没有模糊 API）可以实现的四条：
+      1. Frost 材质 —— 大面积表面是奶白玻璃：底色被雾化，只留颜色。
+      2. 高光边（specular rim）—— 约 1px 的亮边，朝光一侧最亮。
+      3. 暗描边在亮边**外侧** —— 这是 iOS 27 相对 26 的改动，让玻璃有厚度。
+      4. 玻璃上的内容永远是平的、满对比 —— 所以文字色一律不动。
+
+    做不到的：真实背景模糊（backdrop-filter）。VS Code 主题没有模糊能力，
+    这里的「半透明」在原生 VS Code 里只是与相邻层轻微混合；如果另外装了
+    玻璃/透明类扩展（如 Vibrancy），这些 alpha 底色才会真正透出桌面。
+    """
+    # 玻璃面：奶白一层 + 高不透明度（保证原生环境下不跑色）
+    # 用「冷白」而不是纯白，玻璃才会带一点点背后的冷色，不是死灰
+    MILK = "#D8E3F2"
+    glass = alpha(mix(bg, MILK, 0.18), 0.93)     # 浮层（补全 / 悬浮 / 菜单）
+    pane = alpha(mix(bg, MILK, 0.12), 0.90)      # 侧栏 / 面板 / 状态栏
+    pane_soft = alpha(mix(bg, MILK, 0.08), 0.87)  # 活动栏 / 标签栏
+    rim = alpha("#FFFFFF", 0.16)                 # 普通亮边
+    rim_hi = alpha("#FFFFFF", 0.62)              # 高光（朝光一侧）
+    edge = alpha("#000000", 0.60)                # 高光外侧的暗描边
+
+    c["editor.background"] = bg
+    c["editorGutter.background"] = bg
+    c["minimap.background"] = bg
+    c["breadcrumb.background"] = bg
+    c["welcomePage.background"] = bg
+
+    # —— 外围区域：奶白玻璃
+    c["activityBar.background"] = pane_soft
+    c["activityBar.border"] = rim
+    c["activityBar.activeBackground"] = alpha("#FFFFFF", 0.09)
+    c["auxiliaryBar.background"] = pane
+    c["auxiliaryBar.border"] = rim
+    c["sideBar.background"] = pane
+    c["sideBar.border"] = rim
+    c["sideBar.foreground"] = mix(fg, bg, 0.12)
+    c["sideBarSectionHeader.background"] = alpha("#FFFFFF", 0.05)
+    c["sideBarSectionHeader.foreground"] = fg
+    c["statusBar.background"] = pane
+    c["statusBar.border"] = rim
+    c["statusBar.noFolderBackground"] = pane
+    c["statusBarItem.hoverBackground"] = alpha("#FFFFFF", 0.12)
+    c["titleBar.activeBackground"] = pane_soft
+    c["titleBar.inactiveBackground"] = pane_soft
+    c["titleBar.border"] = rim
+
+    # —— 标签栏：未选中是毛面，选中是「挖空的一块玻璃」
+    c["editorGroupHeader.tabsBackground"] = pane_soft
+    c["tabs.background"] = pane_soft
+    c["tab.inactiveBackground"] = alpha("#FFFFFF", 0.04)
+    c["tab.activeBackground"] = alpha(lighten(bg, 0.03), 0.22)
+    c["tab.border"] = edge
+    c["tab.activeBorder"] = alpha(accent, 0.0)
+    c["tab.activeBorderTop"] = rim_hi
+    c["tab.unfocusedActiveBorderTop"] = alpha("#FFFFFF", 0.30)
+    c["editorGroupHeader.tabsBorder"] = edge
+    c["editorGroupHeader.border"] = alpha(bg, 0.0)
+    c["editorGroup.border"] = edge
+
+    # —— 面板 / 终端
+    c["panel.background"] = alpha(lighten(bg, 0.08), 0.88)
+    c["panel.border"] = rim
+    c["panelTitle.activeBorder"] = alpha("#FFFFFF", 0.32)
+    c["panelTitle.inactiveForeground"] = alpha(fg, 0.42)
+    c["terminal.background"] = alpha(lighten(bg, 0.03), 0.35)
+
+    # —— 浮层：玻璃最该出现的地方（悬在代码之上，能透出底色）
+    for key in ("editorWidget.background", "editorSuggestWidget.background",
+                "editorHoverWidget.background", "menu.background",
+                "dropdown.background", "dropdown.listBackground",
+                "quickInput.background", "notifications.background",
+                "notificationCenterHeader.background", "peekViewTitle.background",
+                "debugToolBar.background", "breadcrumbPicker.background"):
+        c[key] = glass
+    for key in ("editorWidget.border", "editorSuggestWidget.border",
+                "editorHoverWidget.border", "menu.border", "dropdown.border",
+                "notifications.border"):
+        c[key] = rim
+    c["widget.shadow"] = alpha("#000000", 0.45)
+    c["scrollbar.shadow"] = alpha("#000000", 0.38)
+    c["focusBorder"] = alpha(accent, 0.55)
+    c["contrastBorder"] = alpha("#FFFFFF", 0.08)
+
+    # —— 交互面：一律用「加白的玻璃」，不用深色块
+    c["selection.background"] = alpha(accent, 0.30)
+    c["editor.selectionBackground"] = alpha(accent, 0.28)
+    c["editor.lineHighlightBackground"] = alpha("#FFFFFF", 0.035)
+    c["list.hoverBackground"] = alpha("#FFFFFF", 0.06)
+    c["list.activeSelectionBackground"] = alpha("#FFFFFF", 0.10)
+    c["list.inactiveSelectionBackground"] = alpha("#FFFFFF", 0.06)
+    c["list.focusBackground"] = alpha(accent, 0.18)
+    c["input.background"] = alpha("#FFFFFF", 0.07)
+    c["input.border"] = rim
+    c["commandCenter.background"] = alpha("#FFFFFF", 0.05)
+    c["commandCenter.border"] = rim
+    c["statusBarItem.remoteBackground"] = alpha(accent, 0.85)
+    c["settings.focusedRowBackground"] = alpha("#FFFFFF", 0.05)
+    c["settings.rowHoverBackground"] = alpha("#FFFFFF", 0.035)
+    c["keybindingLabel.background"] = alpha("#FFFFFF", 0.08)
+    c["menu.selectionBackground"] = alpha(accent, 0.22)
+    return c
 
 
 def build(v):
@@ -873,6 +981,10 @@ def build(v):
         colors["panel.border"] = border
         colors["tab.border"] = border
 
+    # 毛玻璃变体：在一体化基础色之上，改成 iOS 27 Liquid Glass 的材质
+    if v.get("frost"):
+        frostify(colors, bg, fg, accent)
+
     return {
         "name": v["label"],
         "type": "light" if light else "dark",
@@ -931,7 +1043,7 @@ def make_icon(path, size=256):
 
 # ---------------------------------------------------------------- preview
 SAMPLE = [
-    [("c", "// material palette \u2014 12 variants")],
+    [("c", "// material palette \u2014 13 variants")],
     [("k", "import"), ("p", " { defineTheme } "), ("k", "from"),
      ("s", " 'material'"), ("p", ";")],
     [("k", "const"), ("p", " palette "), ("o", "="), ("p", " { ocean: "),
@@ -958,9 +1070,16 @@ def preview_html(variants):
     for v in variants:
         p = v["pal"]
         light = v.get("light", False)
+        frost = v.get("frost", False)
         bg = v["bg"]
         fg = v["fg"]
-        side = mix(bg, "#000000", SEAM * 0.6 if light else SEAM)
+        if frost:
+            # 毛玻璃：外围是奶白玻璃面，所以预览里要画得比编辑区亮
+            side = lighten(bg, 0.10)
+            rim = "#FFFFFF85"
+        else:
+            side = mix(bg, "#000000", SEAM * 0.6 if light else SEAM)
+            rim = alpha(v["accent"], ACCENT_LINE)
         accent = v["accent"]
         rows = []
         for idx, line in enumerate(SAMPLE):
@@ -981,13 +1100,13 @@ def preview_html(variants):
             for k in ["keyword", "func", "string", "number", "type", "constant",
                       "prop", "operator", "tag", "comment"])
         cards.append(f"""
-        <section class="card" style="--bg:{bg};--side:{side};--fg:{fg};--accent:{accent}">
+        <section class="card" style="--bg:{bg};--side:{side};--fg:{fg};--accent:{accent};--rim:{rim}">
           <header>
             <div>
               <h2>{v['label']}</h2>
               <code>{v['id']}.json · {v['ui']}</code>
             </div>
-            <div class="chip">{'LIGHT' if light else 'DARK'}</div>
+            <div class="chip">{'FROST' if frost else ('LIGHT' if light else 'DARK')}</div>
           </header>
           <div class="win">
             <div class="rail"><i class="on"></i><i></i><i></i><i></i></div>
@@ -1038,7 +1157,7 @@ def preview_html(variants):
   .tabs{{display:flex;font-size:11px;background:var(--bg);
         font-family:ui-monospace,Consolas,monospace}}
   .tabs span{{padding:5px 12px 4px;color:var(--fg);opacity:.4;flex:none}}
-  .tabs span.on{{opacity:.95;box-shadow:inset 0 2px 0 0 color-mix(in srgb,var(--accent) {int(ACCENT_LINE*100)}%,transparent)}}
+  .tabs span.on{{opacity:.95;box-shadow:inset 0 2px 0 0 var(--rim)}}
   .code{{padding:8px 14px 6px;font:12px/1.72 ui-monospace,Consolas,"Courier New",monospace;
         color:var(--fg);white-space:pre;overflow:auto}}
   .ln{{display:inline-block;width:20px;text-align:right;margin-right:12px;
@@ -1055,8 +1174,10 @@ def preview_html(variants):
 </style></head><body>
 <div class="hd">
   <h1>Material Palette · VSCode 主题</h1>
-  <p>共 <b>{len(variants)}</b> 套配色。侧栏、标签栏、状态栏与编辑区 <b>同一底色</b>，
-     区域之间零色差；唯一的分割是 <b>#00000030</b> 的压暗阴影 —— 整个窗口是一张连续的纸。</p>
+  <p>共 <b>{len(variants)}</b> 套配色 = <b>{len(variants) - 1}</b> 套一体化 + <b>1</b> 套毛玻璃 Frost。
+     一体化那批：侧栏、标签栏、状态栏与编辑区 <b>同一底色</b>，区域之间零色差，
+     唯一的分割是 <b>#00000030</b> 的压暗阴影 —— 整个窗口是一张连续的纸。
+     Frost 反过来：奶白玻璃面 + <b>1px 高光边</b> + 亮边外侧的暗描边，靠近 iOS 27 的 Liquid Glass。</p>
 </div>
 <div class="grid">{"".join(cards)}</div>
 </body></html>"""
