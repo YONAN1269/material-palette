@@ -30,6 +30,11 @@
     "path": "./themes/nord.json"
   },
   {
+    "label": "Material Palette · Frost",
+    "uiTheme": "vs-dark",
+    "path": "./themes/frost.json"
+  },
+  {
     "label": "Material Palette · Lighter",
     "uiTheme": "vs",
     "path": "./themes/lighter.json"
