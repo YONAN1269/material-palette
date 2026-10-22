@@ -20,7 +20,7 @@ Material 设计语言的 VSCode 配色合集，**13 套主题**（12 套界面�
 | Material Palette · Palenight | `#292D3E` 暗紫 | vs-dark |
 | Material Palette · Deep Forest | `#0D1F17` 深林绿 | vs-dark |
 | Material Palette · Nord | `#2E3440` 极夜蓝 | vs-dark |
-| Material Palette · Frost | `#12161E` 毛玻璃 | vs-dark |
+| Material Palette · Frost | `#0B0E14` 毛玻璃 | vs-dark |
 | Material Palette · Lighter | `#FAFAFA` 浅色 | vs |
 | Material Palette · High Contrast | `#1A2327` | hc-black |
 | Material Palette · Darker High Contrast | `#000000` | hc-black |
@@ -46,12 +46,14 @@ Material 设计语言的 VSCode 配色合集，**13 套主题**（12 套界面�
 
 做法参照 iOS 27 Liquid Glass 里能搬到编辑器上的那几条：
 
-- **雾面玻璃（Frost 材质）**：侧栏、面板、标签栏、状态栏是一层"拌了冷白的半透明面"（`#2A2F37E6`），比编辑区亮一档，看起来像磨砂玻璃，不是深色色块。
-- **1px 高光边**：当前标签顶部一条 `#FFFFFF9E` 的白边，模拟光从上方打过来的镜面反射。
-- **高光外侧压一道暗描边**：`#00000099`。这是 iOS 27 相对 iOS 26 的改动 —— 亮边外面有暗线，玻璃才有厚度，否则像贴了张白纸条。
-- **浮层半透明**：补全框、悬浮提示、菜单的底色带 alpha（`#363B44ED`），能隐约透出下面的代码 —— 这是"玻璃"在编辑器里最有用的一处。
+- **雾面玻璃（Frost 材质）**：侧栏、面板、标签栏、状态栏是一层"拌了冷白的半透明面"（`#373B42F2`），比编辑区（`#0B0E14`）亮好几档，看起来像磨砂玻璃，不是深色色块。
+- **1px 高光边**：当前标签顶部一条 `#FFFFFFD9` 的白边，模拟光从上方打过来的镜面反射。
+- **高光外侧压一道暗描边**：`#000000AD`。这是 iOS 27 相对 iOS 26 的改动 —— 亮边外面有暗线，玻璃才有厚度，否则像贴了张白纸条。
+- **浮层半透明**：补全框、悬浮提示、菜单的底色带 alpha（`#51565ECC`），能隐约透出下面的代码 —— 这是"玻璃"在编辑器里最有用的一处。
 - **文字一律不动**：玻璃上的内容永远平、满对比。这既是 Apple 的规则，也是可读性的底线。
 - **焦点环回来了一点**：`focusBorder` = `#0A84FF8C`（iOS 系统蓝），一体化那批是彻底关掉的。
+
+> 1.4.1 把对比度拉开了一轮：底色从 `#12161E` 压到 `#0B0E14`，玻璃面从 12% 冷白提到 20%，高光边从 62% 提到 85%，补全框透明度从 0.93 降到 0.80。1.4.0 那版太保守，看上去只是一套普通深色主题。
 
 <p align="center">
   <img src="assets/frost.png" alt="Material Palette · Frost 毛玻璃效果示意">
@@ -68,7 +70,7 @@ Material 设计语言的 VSCode 配色合集，**13 套主题**（12 套界面�
 
 **直接下载（推荐，无需等待市场审核）**
 
-[`material-palette-1.4.0.vsix`](https://github.com/YONAN1269/material-palette/releases/latest/download/material-palette-1.4.0.vsix)
+[`material-palette-1.4.1.vsix`](https://github.com/YONAN1269/material-palette/releases/latest/download/material-palette-1.4.1.vsix)
 
 下载后在 VS Code 里按 `Ctrl+Shift+P` → **Extensions: Install from VSIX...** → 选刚下载的文件。
 （Windows 用户的 `material-palette` 目录里也有一份，双击 `rebuild.bat` 会自动打包并安装。）
@@ -76,7 +78,7 @@ Material 设计语言的 VSCode 配色合集，**13 套主题**（12 套界面�
 **命令行安装**
 
 ```bash
-code --install-extension material-palette-1.4.0.vsix
+code --install-extension material-palette-1.4.1.vsix
 ```
 
 装完必须**完全退出 VS Code 再重新启动**（详见下一节）。
