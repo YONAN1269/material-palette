@@ -13,6 +13,65 @@ import sys
 import zipfile
 
 
+def register(root, pkg, folder):
+    """把扩展写进 extensions.json。
+
+    新版 VS Code 以 extensions.json 为唯一清单：只把文件夹解包进去，
+    主题选择器里根本看不到（表现为「装了没变化」）。之前这里漏了，
+    是 1.4.0 一度装完不出现的真正原因。
+    """
+    ext_json = os.path.join(root, "extensions.json")
+    try:
+        with open(ext_json, encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        data = []
+
+    eid = "%s.%s" % (pkg["publisher"].lower(), pkg["name"].lower())
+    template, kept = None, []
+    for e in data:
+        if e.get("identifier", {}).get("id", "").lower() == eid:
+            template = e          # 旧版本的条目，拿来当 URI 结构模板
+            continue
+        kept.append(e)
+
+    if template:
+        old = template.get("relativeLocation", "")
+
+        def swap(o):
+            if isinstance(o, dict):
+                return {k: swap(v) for k, v in o.items()}
+            if isinstance(o, list):
+                return [swap(x) for x in o]
+            if isinstance(o, str) and old and old in o:
+                return o.replace(old, folder)
+            return o
+
+        entry = swap(template)
+        entry["version"] = pkg["version"]
+    else:
+        fs = os.path.join(root, folder)
+        posix = fs.replace("\\", "/")
+        entry = {
+            "identifier": {"id": eid},
+            "version": pkg["version"],
+            "location": {
+                "$mid": 1,
+                "fsPath": fs,
+                "_sep": 1,
+                "external": "file:///" + posix[0].lower() + posix[1:].replace(":", "%3A"),
+                "path": "/" + posix[0].lower() + posix[1:],
+                "scheme": "file",
+            },
+            "relativeLocation": folder,
+        }
+
+    kept.append(entry)
+    with open(ext_json, "w", encoding="utf-8") as f:
+        json.dump(kept, f, indent=2)
+    print("registered in extensions.json: %s@%s" % (eid, pkg["version"]))
+
+
 def main(vsix):
     if not os.path.exists(vsix):
         print("vsix not found:", vsix)
@@ -53,6 +112,7 @@ def main(vsix):
             print("could not remove %s (%s), VS Code will ignore it" % (d, e))
 
     print("installed %s -> %s" % (folder, target))
+    register(root, pkg, folder)
     return 0
 
 
