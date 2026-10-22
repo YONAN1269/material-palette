@@ -17,7 +17,21 @@ import time
 
 EXT_ROOT = os.path.expanduser("~/.vscode/extensions")
 USER_DIR = os.path.expanduser("~/AppData/Roaming/Code/User")
-ID_PREFIX = "local.material-palette-"
+BASE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+
+def _publisher_prefix():
+    """目录名前缀从 package.json 现取 —— 以前写死 local.material-palette-，
+    发布者改成 YONAN1269 之后就再也匹配不上，误报「扩展没装上」。"""
+    try:
+        with open(os.path.join(BASE, "package.json"), encoding="utf-8") as f:
+            pkg = json.load(f)
+        return "%s.%s-" % (pkg["publisher"], pkg["name"])
+    except Exception:
+        return "material-palette-"
+
+
+ID_PREFIX = _publisher_prefix()
 
 # 这几条是全屏最亮的结构线，用来判断「新逻辑」是否生效
 CHECK_KEYS = [
@@ -42,7 +56,7 @@ def installed():
     out = []
     for d in sorted(os.listdir(EXT_ROOT)):
         p = os.path.join(EXT_ROOT, d)
-        if not d.startswith(ID_PREFIX) or not os.path.isdir(p):
+        if not d.lower().startswith(ID_PREFIX.lower()) or not os.path.isdir(p):
             continue
         pkg_path = os.path.join(p, "package.json")
         if not os.path.exists(pkg_path):
