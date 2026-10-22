@@ -389,8 +389,9 @@ VARIANTS = [
     dict(id="nord", label="Material Palette · Nord", ui="vs-dark",
          bg="#2E3440", fg="#D8DEE9", pal=DARK, accent="#88C0D0"),
     # 毛玻璃（Frost）—— 参照 iOS 27 Liquid Glass 的材质规则，见 frostify()
+    # 底色刻意压得很深：玻璃面必须浮在一个「深底」上，层次才看得出来
     dict(id="frost", label="Material Palette · Frost", ui="vs-dark",
-         bg="#12161E", fg="#E9EEF6", pal=DARK, accent="#0A84FF", frost=True),
+         bg="#0B0E14", fg="#E9EEF6", pal=DARK, accent="#0A84FF", frost=True),
     dict(id="lighter", label="Material Palette · Lighter", ui="vs",
          bg="#FAFAFA", fg="#546E7A", pal=LIGHT, accent="#6182B8", light=True),
     dict(id="default-hc", label="Material Palette · High Contrast", ui="hc-black",
@@ -431,13 +432,13 @@ def frostify(c, bg, fg, accent):
     """
     # 玻璃面：奶白一层 + 高不透明度（保证原生环境下不跑色）
     # 用「冷白」而不是纯白，玻璃才会带一点点背后的冷色，不是死灰
-    MILK = "#D8E3F2"
-    glass = alpha(mix(bg, MILK, 0.18), 0.93)     # 浮层（补全 / 悬浮 / 菜单）
-    pane = alpha(mix(bg, MILK, 0.12), 0.90)      # 侧栏 / 面板 / 状态栏
-    pane_soft = alpha(mix(bg, MILK, 0.08), 0.87)  # 活动栏 / 标签栏
-    rim = alpha("#FFFFFF", 0.16)                 # 普通亮边
-    rim_hi = alpha("#FFFFFF", 0.62)              # 高光（朝光一侧）
-    edge = alpha("#000000", 0.60)                # 高光外侧的暗描边
+    MILK = "#E6EEFA"
+    glass = alpha(mix(bg, MILK, 0.32), 0.80)      # 浮层（补全 / 悬浮 / 菜单）：要能透出代码
+    pane = alpha(mix(bg, MILK, 0.20), 0.95)       # 侧栏 / 面板 / 状态栏：明显浮起来
+    pane_soft = alpha(mix(bg, MILK, 0.13), 0.92)  # 活动栏 / 标签栏
+    rim = alpha("#FFFFFF", 0.24)                  # 普通亮边
+    rim_hi = alpha("#FFFFFF", 0.85)               # 高光（朝光一侧）
+    edge = alpha("#000000", 0.68)                 # 高光外侧的暗描边
 
     c["editor.background"] = bg
     c["editorGutter.background"] = bg
@@ -468,7 +469,7 @@ def frostify(c, bg, fg, accent):
     c["editorGroupHeader.tabsBackground"] = pane_soft
     c["tabs.background"] = pane_soft
     c["tab.inactiveBackground"] = alpha("#FFFFFF", 0.04)
-    c["tab.activeBackground"] = alpha(lighten(bg, 0.03), 0.22)
+    c["tab.activeBackground"] = alpha(bg, 0.90)      # 选中页 = 玻璃上挖的一个洞，透出编辑区底色
     c["tab.border"] = edge
     c["tab.activeBorder"] = alpha(accent, 0.0)
     c["tab.activeBorderTop"] = rim_hi
